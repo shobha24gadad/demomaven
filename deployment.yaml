@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demomaven
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demomaven
+  template:
+    metadata:
+      labels:
+        app: demomaven
+    spec:
+      containers:
+      - name: demomaven
+        image: demomaven:v5
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
