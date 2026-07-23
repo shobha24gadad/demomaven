@@ -7,28 +7,49 @@ pipeline {
 
     stages {
 
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/shobha24gadad/demomaven.git'
+            }
+        }
+
         stage('Build') {
             steps {
-                bat 'mvn clean compile'
+                bat 'mvn clean package'
             }
         }
 
-        stage('Test') {
+        stage('Docker Build') {
             steps {
-                bat 'mvn test'
+                bat 'docker build -t demomaven:v1 .'
             }
         }
 
-        stage('Package') {
+        stage('Remove Old Container') {
             steps {
-                bat 'mvn package'
+                bat 'docker rm -f demomaven-app || exit /b 0'
             }
         }
 
-        stage('Archive') {
+        stage('Run Docker Container') {
             steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                bat 'docker run -d -p 8081:8080 --name demomaven-app demomaven:v1'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed.'
+        }
+
+        always {
+            echo 'Pipeline execution completed.'
         }
     }
 }
