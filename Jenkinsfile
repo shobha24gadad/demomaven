@@ -7,12 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/shobha24gadad/demomaven.git'
-            }
-        }
-
         stage('Build') {
             steps {
                 bat 'mvn clean compile'
